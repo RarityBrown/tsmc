@@ -1,40 +1,17 @@
-#### Intrinsic Delay
+#### FEOL: MOSFET
 
-- pdk
-  - CRN28HPC+
-- simulator
-  - Spectre X
-  - Accuracy: AX
-- MOSFET size
-  - p: 260nm / 30nm, 1 finger
-  - n: 200nm / 30nm, 1 finger
-- inverter type
-  - 1: `inv_lvt_mac` 
-  - 2: `INVD0BWP12T30P140LVT`
-  - 3: `nch_lvt_mac` + `pch_lvt_mac`
+- NMOS, 1 finger, finger width 500nm, L 30nm
+  - Ron = 600Ω (575Ω FEOL + 25Ω BEOL)
 
+| NMOS type                  | region                        | cgg    | css      | cdd      |
+| -------------------------- | ----------------------------- | ------ | -------- | -------- |
+| lvt_mac                    | pinch off (VG=VD=1, VS=VB=0)  | 0.32fF | 0.27fF   | 0.09fF   |
+| rf_lvt_nw                  | pinch off                     | 0.37fF | ?0.21fF? | ?0.08fF? |
+| lvt_mac                    | triode (VG=1, VD=VS=VB=0)     | 0.42fF | 0.27fF   | 0.23fF   |
+| rf_lvt_nw                  | triode                        | 0.44fF | ?0.18fF? | ?0.19fF? |
+| lvt_mac / rf_lvt_nw (why?) | turn off (VD=1/0, VG=VS=VB=0) | 0.19fF | 0.09fF   | 0.08fF   |
 
-| Pre-sim intrinsic delay (1 / 2 / 3) ps | TT40 | SS75            |
-| -------------------------------------- | ---- | --------------- |
-| 0.9                                    |      | 3.9 / 3.2 / 3.2 |
-| 1.0                                    |      |                 |
-| 1.1                                    |      |                 |
-
-
-| Post-sim intrinsic delay (cell routing only) (1 / 2 / 3) ps | TT40         | SS75         |
-| ----------------------------------------------------------- | ------------ | ------------ |
-| 0.9                                                         | ? / 4.43 / ? | ? / 5.25 / ? |
-| 1.0                                                         | ? / 3.95 / ? | ? / 4.5 / ?  |
-| 1.1                                                         | ? / 3.62 / ? | ? / 4 / ?    |
-
-
-| Post-sim intrinsic delay (ring osc routing) (1 / 2 / 3) ps | TT40 | SS75 |
-| ---------------------------------------------------------- | ---- | ---- |
-|                                                            |      |      |
-|                                                            |      |      |
-|                                                            |      |      |
-
-#### Metal and Via (including contact)
+#### BEOL: Metal and Via (including contact)
 
 
 | Metal type        | Code | Material | Dielectric  | W/S (µm) (before 0.9 shrink) | Thickness (µm)          | Sheet Resistance @ min W/S | Mask layers                                                 | DC Imax (mA) @ 110℃      |
@@ -42,12 +19,12 @@
 | OD                |      |          |             |                              | 0.092? (from EMX .proc) | 22.5                       |                                                             |                          |
 | PO                |      | Poly     |             |                              | 0.043? (from EMX .proc) | 50.68                      |                                                             |                          |
 | M1                | M1   | Cu       | ELK         | 0.05/0.05                    | 0.09                    | 0.45                       | M1 (360) only                                               | 0.996 × (0.9w - 0.003)   |
-| 1X Metal          | Mx   | Cu       | ELK         | 0.05/0.05                    | 0.09                    | 0.45                       | M2~M8 (380, 381, 384, 385, 386, 387,388), max: seven layers | 0.996 × (0.9w - 0.003)   |
+| 1X Metal          | Mx   | Cu       | ELK         | 0.05/0.05                    | 0.09                    | **0.45**                   | M2~M8 (380, 381, 384, 385, 386, 387,388), max: seven layers | 0.996 × (0.9w - 0.003)   |
 | 2X Metal          | My   | Cu       | LK          | 0.1/0.1                      | 0.19                    |                            | M5~M9 (385, 386, 387, 388, 389), max: two layers            | 2.208 × (0.9w - 0.016)   |
-| 8X Metal          | Mz   | Cu       | USG         | 0.4/0.4                      | 0.85                    | 0.0218                     | M5~M10 (385, 386, 387, 388, 389, 38A), max: three layers    | 9.048 × (0.9w - 0.02)    |
+| 8X Metal          | Mz   | Cu       | USG         | 0.4/0.4                      | 0.85                    | **0.0218**                 | M5~M10 (385, 386, 387, 388, 389, 38A), max: three layers    | 9.048 × (0.9w - 0.02)    |
 | 10X Metal         | Mr   | Cu       | USG         | 0.5/0.5                      | 1.15                    |                            | M5~M10 (385, 386, 387, 388, 389, 38A), max: two layers      | 12.631 × (0.9w - 0.02)   |
-| Ultra Thick Metal | Mu   | Cu       | USG         | 2.0/1.0                      | 3.5                     | 0.0051                     | M5~M9 (385, 386, 387, 388, 389), max: one layer             | 34.590 × (0.9w - 0.02)   |
-| AL RDL            | AP   | Cu       | Passivation | 2.0/2.0                      | 2.8 (FC/WB); 1.45 (WB)  | 0.011 / ?                  | AP (309)                                                    | 5.79 × 0.9w; 3.00 × 0.9w |
+| Ultra Thick Metal | Mu   | Cu       | USG         | 2.0/1.0                      | 3.5                     | **0.0051**                 | M5~M9 (385, 386, 387, 388, 389), max: one layer             | 34.590 × (0.9w - 0.02)   |
+| AL RDL            | AP   | Cu       | Passivation | 2.0/2.0                      | 2.8 (FC/WB); 1.45 (WB)  | **0.011** / ?               | AP (309)                                                    | 5.79 × 0.9w; 3.00 × 0.9w |
 
 ---
 
@@ -100,3 +77,38 @@ Two typical metal configuration options: 1. full-metal `1P10M_5x2y2z`, and 2. th
 | RV    |      RV      |     RV      |
 | AP    |      AP      |     AP      |
 
+#### Intrinsic Delay
+
+- pdk
+  - CRN28HPC+
+- simulator
+  - Spectre X
+  - Accuracy: AX
+- MOSFET size
+  - p: 260nm / 30nm, 1 finger
+  - n: 200nm / 30nm, 1 finger
+- inverter type
+  - 1: `inv_lvt_mac` 
+  - 2: `INVD0BWP12T30P140LVT`
+  - 3: `nch_lvt_mac` + `pch_lvt_mac`
+
+
+| Pre-sim intrinsic delay (1 / 2 / 3) ps | TT40 | SS75            |
+| -------------------------------------- | ---- | --------------- |
+| 0.9                                    |      | 3.9 / 3.2 / 3.2 |
+| 1.0                                    |      |                 |
+| 1.1                                    |      |                 |
+
+
+| Post-sim intrinsic delay (cell routing only) (1 / 2 / 3) ps | TT40         | SS75         |
+| ----------------------------------------------------------- | ------------ | ------------ |
+| 0.9                                                         | ? / 4.43 / ? | ? / 5.25 / ? |
+| 1.0                                                         | ? / 3.95 / ? | ? / 4.5 / ?  |
+| 1.1                                                         | ? / 3.62 / ? | ? / 4 / ?    |
+
+
+| Post-sim intrinsic delay (ring osc routing) (1 / 2 / 3) ps | TT40 | SS75 |
+| ---------------------------------------------------------- | ---- | ---- |
+|                                                            |      |      |
+|                                                            |      |      |
+|                                                            |      |      |
