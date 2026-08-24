@@ -2,6 +2,7 @@
 
 - NMOS, 1 finger, finger width 500nm, L 30nm
   - Ron = 600Ω (575Ω FEOL + 25Ω BEOL)
+  - rout = 1k (Vgs=400m, vds=150m, nch_lvt_mac, id=50u)
 
 | NMOS type                  | region                        | cgg    | css      | cdd      |
 | -------------------------- | ----------------------------- | ------ | -------- | -------- |
